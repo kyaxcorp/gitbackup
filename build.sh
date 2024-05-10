@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO="mrdiffer/git-backup"
-TAG_NAME="$REPO:2024.04.01"
+TAG_NAME="$REPO:2024.05.10"
 LATEST="$REPO:latest"
 
 docker buildx create --use --name mounted-build-kit --node mounted-build-kit --bootstrap

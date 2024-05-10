@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . /app
 
 RUN go mod download
-RUN go build -o /tmp/main main.go
+RUN go build -o /tmp/main
 
 FROM rockylinux:9
 
@@ -17,7 +17,7 @@ RUN dnf install -y p7zip p7zip-plugins git
 RUN mkdir -p /app
 COPY --from=go-build /tmp/main ./app
 RUN ln -s /app/app /usr/bin/app
-COPY docker/container.entrypoint.sh ./
+COPY container.entrypoint.sh ./
 RUN chmod +x container.entrypoint.sh
 
 ARG BUILD_NO=1
