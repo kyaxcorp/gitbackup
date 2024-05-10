@@ -14,7 +14,7 @@ RUN dnf update -y
 RUN dnf install epel-release -y
 RUN dnf install -y p7zip p7zip-plugins git
 
-RUN mkdir -p /app
+WORKDIR /app
 COPY --from=go-build /tmp/main ./app
 RUN ln -s /app/app /usr/bin/app
 COPY container.entrypoint.sh ./
@@ -77,4 +77,4 @@ LABEL BUILD_VCS_COMMIT_ID_URL=$BUILD_VCS_COMMIT_ID_URL
 ENV BUILD_VCS_COMMIT_ID_URL=$BUILD_VCS_COMMIT_ID_URL
 
 
-ENTRYPOINT ["/app/backup.sh"]
+ENTRYPOINT ["/app/container.entrypoint.sh"]
