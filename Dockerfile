@@ -15,8 +15,8 @@ RUN dnf install epel-release -y
 RUN dnf install -y p7zip p7zip-plugins git
 
 WORKDIR /app
-COPY --from=go-build /tmp/main ./app
-RUN ln -s /app/app /usr/bin/app
+COPY --from=go-build /tmp/main ./gitbackup
+RUN ln -s /app/gitbackup /usr/bin/gitbackup
 COPY container.entrypoint.sh ./
 RUN chmod +x container.entrypoint.sh
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/usr/bin/app "$@"
+/usr/bin/gitbackup "$@"
