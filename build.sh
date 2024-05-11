@@ -9,7 +9,7 @@ if ! docker buildx build \
      --builder mounted-build-kit \
      --push \
      --platform linux/amd64,linux/arm64 \
-     --tag $TAG_NAME --tag $LATEST -f Dockerfile  .; then
+     --tag $TAG_NAME --tag $LATEST -f Dockerfile . ; then
   echo "build error, terminating script"
   exit 1
 fi
