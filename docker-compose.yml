@@ -1,0 +1,11 @@
+services:
+  go-autobuilder:
+    build:
+      context: .
+      dockerfile: docker/assets/dev/goapp.dockerfile
+    command: "air -c .air.toml"
+    working_dir: "/app"
+    ports:
+      - "8083:8080"
+    volumes:
+      - .:/app
