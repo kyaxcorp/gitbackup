@@ -9,7 +9,7 @@ bin = "/usr/bin/gitbackup"
 cmd = """go build -buildvcs=false -ldflags "
 -X 'go.szostok.io/version.version=0.0.1'
 -X 'go.szostok.io/version.buildDate=`date`'
-" -o /usr/bin/gitbackup ."""
+" -o /usr/bin/gitbackup -o /app/gitbackup ."""
 # DELAY it's very necessary, because sometimes it can start the build process multiple times!
 delay = 1000
 exclude_dir = ["assets", "tmp", "vendor", "testdata", "bin", "docker", "build", "public", ".idea"]

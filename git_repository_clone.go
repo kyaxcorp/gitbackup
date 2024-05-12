@@ -12,7 +12,7 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 	var wg sync.WaitGroup
 	defer wg.Wait()
 
-	tokens := make(chan bool, MaxConcurrentClones)
+	tokens := make(chan bool, c.maxConcurrentClones)
 	gitHostUsername = getUsername(client, c.service)
 
 	if len(gitHostUsername) == 0 && !*ignorePrivate && *useHTTPSClone {
@@ -28,6 +28,7 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 		c.gitlabProjectMembershipType,
 		c.ignoreFork,
 	)
+
 	if err != nil {
 		return err
 	}

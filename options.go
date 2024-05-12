@@ -38,6 +38,11 @@ func initConfig(args []string) (*appConfig, error) {
 		defaultMaxUserMigrationRetry,
 		"Number of retries to attempt for creating GitHub user migration",
 	)
+	fs.IntVar(
+		&c.maxConcurrentClones, "maxConcurrentClones",
+		10,
+		"Max Number of Concurrent Clones",
+	)
 	fs.BoolVar(
 		&c.githubListUserMigrations,
 		"github.listUserMigrations",
@@ -68,6 +73,9 @@ func initConfig(args []string) (*appConfig, error) {
 	if err != nil && !errors.Is(err, flag.ErrHelp) {
 		return nil, err
 	}
+
+	useHTTPSClone = &c.useHTTPSClone
+	ignorePrivate = &c.ignorePrivate
 
 	// Split namespaces
 	if len(c.githubNamespaceWhitelist) > 0 {

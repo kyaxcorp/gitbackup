@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/mitchellh/go-homedir"
 	"log"
 	"net/url"
 	"os/exec"
 	"path"
 	"sync"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/afero"
 )
 

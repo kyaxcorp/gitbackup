@@ -24,7 +24,6 @@ var knownServices = map[string]string{
 }
 
 func main() {
-
 	c, err := initConfig(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)

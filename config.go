@@ -17,6 +17,8 @@ type appConfig struct {
 	githubListUserMigrations          bool
 	githubWaitForMigrationComplete    bool
 
+	maxConcurrentClones int
+
 	gitlabProjectVisibility     string
 	gitlabProjectMembershipType string
 }
