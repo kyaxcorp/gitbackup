@@ -9,6 +9,7 @@ import (
 func handleGithubCreateUserMigration(client interface{}, c *appConfig) {
 	repos, err := getRepositories(
 		client,
+		c,
 		c.service,
 		c.githubRepoType,
 		c.githubNamespaceWhitelist,

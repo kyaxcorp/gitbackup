@@ -2,16 +2,23 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/google/go-github/v34/github"
 )
 
 func getGithubRepositories(
 	client interface{},
-	service string, githubRepoType string, githubNamespaceWhitelist []string,
-	gitlabProjectVisibility string, gitlabProjectMembershipType string,
+	c *appConfig,
+	service string,
+	githubRepoType string,
+	githubNamespaceWhitelist []string,
+	gitlabProjectVisibility string,
+	gitlabProjectMembershipType string,
 	ignoreFork bool,
 ) ([]*Repository, error) {
 
@@ -23,6 +30,18 @@ func getGithubRepositories(
 	var cloneURL string
 
 	ctx := context.Background()
+
+	var err error
+	var startFromLastPushAt time.Time
+	var startFromLastPush bool
+
+	if c.githubStartFromLastPushAt != "" {
+		startFromLastPush = true
+		startFromLastPushAt, err = time.Parse("2006-01-02 15:04:05", c.githubStartFromLastPushAt)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to parse githubStartFromLastPushAt -> %v", err.Error()))
+		}
+	}
 
 	if githubRepoType == "starred" {
 		options := github.ActivityListStarredOptions{}
@@ -39,6 +58,15 @@ func getGithubRepositories(
 					} else {
 						cloneURL = *star.Repository.SSHURL
 					}
+
+					if startFromLastPush {
+						if star.Repository.PushedAt != nil {
+							if !star.Repository.PushedAt.Time.After(startFromLastPushAt) {
+								continue
+							}
+						}
+					}
+
 					repositories = append(repositories, &Repository{
 						PushedAt:  star.Repository.PushedAt,
 						UpdatedAt: star.Repository.UpdatedAt,
@@ -82,6 +110,15 @@ func getGithubRepositories(
 				} else {
 					cloneURL = *repo.SSHURL
 				}
+
+				if startFromLastPush {
+					if repo.PushedAt != nil {
+						if !repo.PushedAt.Time.After(startFromLastPushAt) {
+							continue
+						}
+					}
+				}
+
 				repositories = append(repositories, &Repository{
 					PushedAt:  repo.PushedAt,
 					UpdatedAt: repo.UpdatedAt,

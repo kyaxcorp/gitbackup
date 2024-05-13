@@ -33,7 +33,7 @@ gitbackup/gitbackup:latest \
 -backupdir /gitbackup \
 -archive-dir /gitbackup-archives \
 -archive-encryption-password "1234567890" \
--github.startFromLastPushAt ""
+-github.startFromLastPushAt "2006-01-02 15:04:05"
 ```
 
 ## Using `gitbackup`
@@ -96,7 +96,7 @@ Usage of ./gitbackup:
   -github.createUserMigration
         Download user data
   -github.startFromLastPushAt
-        Start backing up the repo which has a Push Equal or Higher than specified
+        Start backing up the repo which has a Push Equal or Higher than specified (Layout: 2006-01-02 15:04:05)
   -github.createUserMigrationRetry
         Retry creating the GitHub user migration if we get an error (default true)
   -github.createUserMigrationRetryMax int

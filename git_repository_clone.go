@@ -21,6 +21,7 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 
 	repositories, err := getRepositories(
 		client,
+		c,
 		c.service,
 		c.githubRepoType,
 		c.githubNamespaceWhitelist,
@@ -41,10 +42,13 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 		tokens <- true
 		wg.Add(1)
 		go func(repo *Repository) {
+			// Backup
 			stdoutStderr, err := backUp(c.backupDir, repo, c.bare, &wg)
 			if err != nil {
 				log.Printf("Error backing up %s: %s\n", repo.Name, stdoutStderr)
 			}
+			// Archive
+
 			<-tokens
 		}(repo)
 	}

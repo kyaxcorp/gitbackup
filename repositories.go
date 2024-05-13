@@ -38,6 +38,7 @@ type Repository struct {
 
 func getRepositories(
 	client interface{},
+	c *appConfig,
 	service string, githubRepoType string, githubNamespaceWhitelist []string,
 	gitlabProjectVisibility string, gitlabProjectMembershipType string,
 	ignoreFork bool,
@@ -49,6 +50,7 @@ func getRepositories(
 	case "github":
 		repositories, err = getGithubRepositories(
 			client,
+			c,
 			service,
 			githubRepoType,
 			githubNamespaceWhitelist,
