@@ -47,5 +47,7 @@ func main() {
 	}
 	if executionErr != nil {
 		log.Fatal(executionErr)
+	} else {
+		log.Println("backup finished successfully")
 	}
 }
