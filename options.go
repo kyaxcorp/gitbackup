@@ -17,6 +17,8 @@ func initConfig(args []string) (*appConfig, error) {
 	fs.StringVar(&c.service, "service", "", "Git Hosted Service Name (github/gitlab/bitbucket)")
 	fs.StringVar(&c.gitHostURL, "githost.url", "", "DNS of the custom Git host")
 	fs.StringVar(&c.backupDir, "backupdir", "", "Backup directory")
+	fs.StringVar(&c.archiveDir, "archive-dir", "", "Backup Archive directory")
+	fs.StringVar(&c.archiveEncryptionPassword, "archive-encryption-password", "", "Archive Encryption Password")
 	fs.BoolVar(&c.ignorePrivate, "ignore-private", false, "Ignore private repositories/projects")
 	fs.BoolVar(&c.ignoreFork, "ignore-fork", false, "Ignore repositories which are forks")
 	fs.BoolVar(&c.useHTTPSClone, "use-https-clone", false, "Use HTTPS for cloning instead of SSH")
@@ -24,6 +26,13 @@ func initConfig(args []string) (*appConfig, error) {
 
 	// GitHub specific flags
 	fs.StringVar(&c.githubRepoType, "github.repoType", "all", "Repo types to backup (all, owner, member, starred)")
+
+	fs.StringVar(&c.githubStartFromLastPushAt,
+		"github.startFromLastPushAt",
+		"",
+		"Start backing up the repo which has a Push Equal or Higher than specified",
+	)
+
 	fs.StringVar(
 		&githubNamespaceWhitelistString, "github.namespaceWhitelist",
 		"", "Organizations/Users from where we should clone (separate each value by a comma: 'user1,org2')",

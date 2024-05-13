@@ -1,27 +1,29 @@
 # gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories
-Code Quality [![Go Report Card](https://goreportcard.com/badge/github.com/amitsaha/gitbackup)](https://goreportcard.com/report/github.com/amitsaha/gitbackup)
+
+Code
+Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
 [![.github/workflows/ci.yml](https://github.com/amitsaha/gitbackup/actions/workflows/ci.yml/badge.svg)](https://github.com/amitsaha/gitbackup/actions/workflows/ci.yml)
 
 - [gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories](#gitbackup---backup-your-github-gitlab-and-bitbucket-repositories)
-  - [Introduction](#introduction)
-  - [Running `gitbackup` from docker](#running-gitbackup-from-docker)
-  - [Using `gitbackup`](#using-gitbackup)
-    - [GitHub Specific oAuth App Flow](#github-specific-oauth-app-flow)
-    - [OAuth Scopes/Permissions required](#oauth-scopespermissions-required)
-      - [Bitbucket](#bitbucket)
-      - [GitHub](#github)
-      - [GitLab](#gitlab)
-    - [Security and credentials](#security-and-credentials)
-    - [Examples](#examples)
-      - [Backing up your GitHub repositories](#backing-up-your-github-repositories)
-      - [Backing up your GitLab repositories](#backing-up-your-gitlab-repositories)
-      - [GitHub Enterprise or custom GitLab installation](#github-enterprise-or-custom-gitlab-installation)
-      - [Backing up your Bitbucket repositories](#backing-up-your-bitbucket-repositories)
-      - [Specifying a backup location](#specifying-a-backup-location)
-      - [Cloning bare repositories](#cloning-bare-repositories)
-      - [GitHub Migrations](#github-migrations)
-  - [Building](#building)
-  
+    - [Introduction](#introduction)
+    - [Running `gitbackup` from docker](#running-gitbackup-from-docker)
+    - [Using `gitbackup`](#using-gitbackup)
+        - [GitHub Specific oAuth App Flow](#github-specific-oauth-app-flow)
+        - [OAuth Scopes/Permissions required](#oauth-scopespermissions-required)
+            - [Bitbucket](#bitbucket)
+            - [GitHub](#github)
+            - [GitLab](#gitlab)
+        - [Security and credentials](#security-and-credentials)
+        - [Examples](#examples)
+            - [Backing up your GitHub repositories](#backing-up-your-github-repositories)
+            - [Backing up your GitLab repositories](#backing-up-your-gitlab-repositories)
+            - [GitHub Enterprise or custom GitLab installation](#github-enterprise-or-custom-gitlab-installation)
+            - [Backing up your Bitbucket repositories](#backing-up-your-bitbucket-repositories)
+            - [Specifying a backup location](#specifying-a-backup-location)
+            - [Cloning bare repositories](#cloning-bare-repositories)
+            - [GitHub Migrations](#github-migrations)
+    - [Building](#building)
+
 ## Introduction
 
 ``gitbackup`` is a tool to backup your git repositories from GitHub (including GitHub enterprise),
@@ -29,11 +31,15 @@ GitLab (including custom GitLab installations), or Bitbucket.
 
 ``gitbackup`` currently has two operation modes:
 
-- The first and original operating mode is to create clones of only your git repository. This is supported for Bitbucket, GitHub and Gitlab.
-- The second operating mode is only available for GitHub where you can create a user migration (including orgs) which you get back as a .tar.gz
+- The first and original operating mode is to create clones of only your git repository. This is supported for
+  Bitbucket, GitHub and Gitlab.
+- The second operating mode is only available for GitHub where you can create a user migration (including orgs) which
+  you get back as a .tar.gz
   file containing all the artefacts that GitHub supports via their Migration API.
-  
-If you are following along my [Linux Journal article](https://www.linuxjournal.com/content/back-github-and-gitlab-repositories-using-golang) (published in 2017), please obtain the version of the 
+
+If you are following along
+my [Linux Journal article](https://www.linuxjournal.com/content/back-github-and-gitlab-repositories-using-golang) (
+published in 2017), please obtain the version of the
 source tagged with [lj-0.1](https://github.com/amitsaha/gitbackup/releases/tag/lj-0.1).
 
 ## Running `gitbackup` from docker
@@ -44,12 +50,16 @@ docker run \
 --name gitbackup \
 -e GITHUB_TOKEN=$GITHUB_TOKEN \
 -v /tmp/gitbackup:/gitbackup \
+-v /tmp/gitbackup-archives:/gitbackup-archives \
 gitbackup/gitbackup:latest \
 -bare \
 -maxConcurrentClones 1 \
 -use-https-clone \
 -service github \
--backupdir /gitbackup
+-backupdir /gitbackup \
+-archive-dir /gitbackup-archives \
+-archive-dir /gitbackup-archives \
+-github.startFromLastPushAt ""
 ```
 
 ## Using `gitbackup`
@@ -72,10 +82,10 @@ $ ./gitbackup -service github -github.repoType starred
 Copy code: <some code>
 then open: https://github.com/login/device
 ```
+
 Once your authorize the app, `gitbackup` will retrieve the token, and also store it in your operating system's
 keychain/keyring (using the [99designs/keyring](https://github.com/99designs/keyring) package - thanks!). Next
 time you run it, it will ask you for the keyring password and retrieve the token automatically.
-
 
 ### OAuth Scopes/Permissions required
 
@@ -89,20 +99,20 @@ For the App password, the following permissions are required:
 #### GitHub
 
 - `repo`: Reading repositories, including private repositories
-- `user` and `admin:org`: Basically, this gives `gitbackup` a lot of permissions than you may be comfortable with. 
-   However, these are required for the user migration and org migration operations.
+- `user` and `admin:org`: Basically, this gives `gitbackup` a lot of permissions than you may be comfortable with.
+  However, these are required for the user migration and org migration operations.
 
 #### GitLab
 
 - `api`: Grants complete read/write access to the API, including all groups and projects.
-For some reason, `read_user` and `read_repository` is not sufficient.
+  For some reason, `read_user` and `read_repository` is not sufficient.
 
 ### Security and credentials
 
-When you provide the tokens via environment variables, they remain accessible in your shell history 
+When you provide the tokens via environment variables, they remain accessible in your shell history
 and via the processes' environment for the lifetime of the process. By default, SSH authentication
 is used to clone your repositories. If `use-https-clone` is specified, private repositories
-are cloned via `https` basic auth and the token provided will be stored  in the repositories' 
+are cloned via `https` basic auth and the token provided will be stored in the repositories'
 `.git/config`.
 
 ### Examples
@@ -114,6 +124,10 @@ $ gitbackup -help
 Usage of ./gitbackup:
   -backupdir string
         Backup directory
+  -archive-dir string
+        Archive Backup directory  
+  -archive-encryption-password 
+        Archive Encryption Password
   -bare
         Clone bare repositories
   -maxConcurrentClones 5
@@ -122,6 +136,8 @@ Usage of ./gitbackup:
         DNS of the custom Git host
   -github.createUserMigration
         Download user data
+  -github.startFromLastPushAt
+        Start backing up the repo which has a Push Equal or Higher than specified
   -github.createUserMigrationRetry
         Retry creating the GitHub user migration if we get an error (default true)
   -github.createUserMigrationRetryMax int
@@ -182,7 +198,8 @@ $ GITHUB_TOKEN=secret$token gitbackup -service github -github.namespaceWhitelist
 
 #### Backing up your GitLab repositories
 
-To backup all projects you either own or are a member of which have their [visibility](https://docs.gitlab.com/ce/api/projects.html#project-visibility-level) set to
+To backup all projects you either own or are a member of which have
+their [visibility](https://docs.gitlab.com/ce/api/projects.html#project-visibility-level) set to
 "internal" on ``https://gitlab.com`` to the default backup directory (``$HOME/.gitbackup/``):
 
 ```lang=bash
@@ -257,7 +274,6 @@ Similarly, it will create a ``gitlab.com`` directory, if you are backing up repo
 ``bitbucket.com`` directory if you are backing up from Bitbucket.
 If you have specified a Git Host URL, it will create a directory structure ``data/host-url/``.
 
-
 #### Cloning bare repositories
 
 To clone bare repositories, we can use the ``bare`` flag:
@@ -270,7 +286,7 @@ This will create a directory structure like ``github.com/org/repo.git`` containi
 
 #### GitHub Migrations
 
-`gitbackup` starting from the 0.6 release includes support for downloading your user data/organization data as 
+`gitbackup` starting from the 0.6 release includes support for downloading your user data/organization data as
 made available via the [Migrations API](https://docs.github.com/en/rest/reference/migrations). As of this
 release, you can create an user migration (including your owned organizations data) and download the migration
 artefact using the following command:
@@ -294,5 +310,6 @@ $ ./gitbackup -service github -github.createUserMigration -ignore-fork -github.r
 ..
 2021/05/14 05:46:16 Downloading file to: /home/runner/.gitbackup/github.com/practicalgo-migration-571103.tar.gz
 ```
+
 You can then integrate this with your own scripting to push the data to S3 for example (See an example
 workflow via scheduled github actions [here](https://github.com/amitsaha/gitbackup/actions/workflows/backup.yml)).

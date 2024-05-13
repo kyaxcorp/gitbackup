@@ -1,14 +1,18 @@
 package main
 
 type appConfig struct {
-	service       string
-	gitHostURL    string
-	backupDir     string
-	ignorePrivate bool
-	ignoreFork    bool
-	useHTTPSClone bool
-	bare          bool
+	service                   string
+	gitHostURL                string
+	backupDir                 string
+	archiveDir                string
+	archiveEncryptionPassword string
+	ignorePrivate             bool
+	ignoreFork                bool
+	useHTTPSClone             bool
+	bare                      bool
+	maxConcurrentClones       int
 
+	// GitHub
 	githubRepoType                    string
 	githubNamespaceWhitelist          []string
 	githubCreateUserMigration         bool
@@ -16,9 +20,9 @@ type appConfig struct {
 	githubCreateUserMigrationRetryMax int
 	githubListUserMigrations          bool
 	githubWaitForMigrationComplete    bool
+	githubStartFromLastPushAt         string
 
-	maxConcurrentClones int
-
+	// Git Lab
 	gitlabProjectVisibility     string
 	gitlabProjectMembershipType string
 }
