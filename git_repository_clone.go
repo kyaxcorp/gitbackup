@@ -41,7 +41,7 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 			var tmpContent string
 			tmpContent, err = getFileContents(githubSaveLastBackupDateAndContinueFromCacheFilePath)
 			if tmpContent != "" {
-				tmpTime, timeErr := time.Parse("", tmpContent)
+				tmpTime, timeErr := time.Parse(cacheSaveLastBackupDateAndContinueFromCache, tmpContent)
 				if timeErr != nil {
 					// reset?! or report error...
 					return timeErr

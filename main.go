@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
@@ -46,7 +47,7 @@ func main() {
 		executionErr = handleGitRepositoryClone(client, c)
 	}
 	if executionErr != nil {
-		log.Fatal(executionErr)
+		log.Fatalln(fmt.Sprintf("execution error -> %v", executionErr.Error()))
 	} else {
 		log.Println("backup finished successfully")
 	}

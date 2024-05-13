@@ -1,7 +1,6 @@
 # gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories
 
-Code
-Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
+Code Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
 
 ## Introduction
 
@@ -19,6 +18,7 @@ GitLab (including custom GitLab installations), or Bitbucket.
 ## Running `gitbackup` from docker
 
 ```
+docker pull gitbackup/gitbackup:latest
 docker run \
 --rm \
 --name gitbackup \
@@ -37,6 +37,9 @@ gitbackup/gitbackup:latest \
 -archive-encryption-password "1234567890" \
 -github.startFromLastPushAt "2006-01-02 15:04:05" \
 -github.saveLastBackupDateAndContinueFrom true
+
+# Save your archives
+...
 ```
 
 ## Using `gitbackup`
