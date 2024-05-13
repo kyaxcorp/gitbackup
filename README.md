@@ -1,7 +1,6 @@
 # gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories
 
-Code
-Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
+Code Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
 
 ## Introduction
 
