@@ -23,15 +23,17 @@ docker run \
 --rm \
 --name gitbackup \
 -e GITHUB_TOKEN=$GITHUB_TOKEN \
--v /tmp/gitbackup:/gitbackup \
--v /tmp/gitbackup-archives:/gitbackup-archives \
+-v /tmp/gitbackup/backups:/gitbackup/backups \
+-v /tmp/gitbackup/archives:/gitbackup/archives \
+-v /tmp/gitbackup/cache:/gitbackup/cache \
 gitbackup/gitbackup:latest \
 -bare \
 -maxConcurrentClones 1 \
 -use-https-clone \
 -service github \
--backupdir /gitbackup \
--archive-dir /gitbackup-archives \
+-backupdir /gitbackup/backups \
+-archive-dir /gitbackup/archives \
+-cache-dir /gitbackup/cache \
 -archive-encryption-password "1234567890" \
 -github.startFromLastPushAt "2006-01-02 15:04:05" \
 -github.saveLastBackupDateAndContinueFrom true
@@ -85,7 +87,9 @@ Usage of ./gitbackup:
   -backupdir string
         Backup directory
   -archive-dir string
-        Archive Backup directory  
+        Archive Backup directory
+  -cache-dir string
+        Cache directory  
   -archive-encryption-password 
         Archive Encryption Password
   -bare

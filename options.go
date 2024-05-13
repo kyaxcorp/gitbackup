@@ -18,6 +18,7 @@ func initConfig(args []string) (*appConfig, error) {
 	fs.StringVar(&c.gitHostURL, "githost.url", "", "DNS of the custom Git host")
 	fs.StringVar(&c.backupDir, "backupdir", "", "Backup directory")
 	fs.StringVar(&c.archiveDir, "archive-dir", "", "Backup Archive directory")
+	fs.StringVar(&c.cacheDir, "cache-dir", "", "Cache directory")
 	fs.StringVar(&c.archiveEncryptionPassword, "archive-encryption-password", "", "Archive Encryption Password")
 	fs.BoolVar(&c.ignorePrivate, "ignore-private", false, "Ignore private repositories/projects")
 	fs.BoolVar(&c.ignoreFork, "ignore-fork", false, "Ignore repositories which are forks")
