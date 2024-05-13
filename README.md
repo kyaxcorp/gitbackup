@@ -4,7 +4,7 @@ Code Quality [![Go Report Card](https://goreportcard.com/badge/github.com/amitsa
 
 - [gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories](#gitbackup---backup-your-github-gitlab-and-bitbucket-repositories)
   - [Introduction](#introduction)
-  - [Installing `gitbackup`](#installing-gitbackup)
+  - [Running `gitbackup` from docker](#running-gitbackup-from-docker)
   - [Using `gitbackup`](#using-gitbackup)
     - [GitHub Specific oAuth App Flow](#github-specific-oauth-app-flow)
     - [OAuth Scopes/Permissions required](#oauth-scopespermissions-required)
@@ -36,12 +36,21 @@ GitLab (including custom GitLab installations), or Bitbucket.
 If you are following along my [Linux Journal article](https://www.linuxjournal.com/content/back-github-and-gitlab-repositories-using-golang) (published in 2017), please obtain the version of the 
 source tagged with [lj-0.1](https://github.com/amitsaha/gitbackup/releases/tag/lj-0.1).
 
-## Installing `gitbackup`
+## Running `gitbackup` from docker
 
-Binary releases are available from the [Releases](https://github.com/amitsaha/gitbackup/releases/) page. Please download the binary corresponding to your OS
-and architecture and copy the binary somewhere in your ``$PATH``. It is recommended to rename the binary to `gitbackup` or `gitbackup.exe` (on Windows).
-
-If you are on MacOS, a community member has created a [Homebrew formula](https://formulae.brew.sh/formula/gitbackup).
+```
+docker run \
+--rm \
+--name gitbackup \
+-e GITHUB_TOKEN=$GITHUB_TOKEN \
+-v /tmp/gitbackup:/gitbackup \
+gitbackup/gitbackup:latest \
+-bare \
+-maxConcurrentClones 1 \
+-use-https-clone \
+-service github \
+-backupdir /gitbackup
+```
 
 ## Using `gitbackup`
 
@@ -107,6 +116,8 @@ Usage of ./gitbackup:
         Backup directory
   -bare
         Clone bare repositories
+  -maxConcurrentClones 5
+        Max concurrent clones
   -githost.url string
         DNS of the custom Git host
   -github.createUserMigration
@@ -285,13 +296,3 @@ $ ./gitbackup -service github -github.createUserMigration -ignore-fork -github.r
 ```
 You can then integrate this with your own scripting to push the data to S3 for example (See an example
 workflow via scheduled github actions [here](https://github.com/amitsaha/gitbackup/actions/workflows/backup.yml)).
-
-## Building
-
-If you have Go 1.21.x installed, you can clone the repository and:
-
-```
-$ go build
-```
-
-The built binary will be ``gitbackup``.
