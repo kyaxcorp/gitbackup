@@ -23,9 +23,9 @@ docker run \
 --rm \
 --name gitbackup \
 -e GITHUB_TOKEN=$GITHUB_TOKEN \
--v /tmp/gitbackup/backups:/gitbackup/backups \
--v /tmp/gitbackup/archives:/gitbackup/archives \
--v /tmp/gitbackup/cache:/gitbackup/cache \
+-v /opt/gitbackup/backups:/gitbackup/backups \
+-v /opt/gitbackup/archives:/gitbackup/archives \
+-v /opt/gitbackup/cache:/gitbackup/cache \
 gitbackup/gitbackup:latest \
 -bare \
 -maxConcurrentClones 1 \
