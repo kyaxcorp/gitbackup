@@ -103,7 +103,14 @@ func backUp(
 		}
 
 		now := time.Now()
-		archiveDir := path.Join(appCfg.archiveDir, strings.Join([]string{repo.Namespace, dirName, now.Format("2006-01-02-15-04-05-0700")}, "-")+suffix)
+		archiveFullPath := path.Join(
+			appCfg.archiveDir,
+			strings.Join([]string{
+				repo.Namespace,
+				strings.ReplaceAll(dirName, ".git", ""),
+				now.Format("2006-01-02-15-04-05-0700"),
+			}, "-")+suffix,
+		)
 
 		archiveArgs = append(archiveArgs, []string{
 			"-v1500M",
@@ -114,9 +121,11 @@ func backUp(
 			"-md=32m",
 			"-ms=on",
 			"-mhe=on",
-			archiveDir,
+			archiveFullPath,
 			repoDir,
 		}...)
+
+		log.Println(archiveArgs)
 
 		archiveCmd := execCommand(archiveCommand, archiveArgs...)
 		archiveStdoutStderr, archiveErr := archiveCmd.CombinedOutput()
