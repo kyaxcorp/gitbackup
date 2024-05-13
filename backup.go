@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"log"
 	"net/url"
+	"os"
 	"os/exec"
 	"path"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/spf13/afero"
 )
@@ -15,11 +19,17 @@ import (
 var execCommand = exec.Command
 var appFS = afero.NewOsFs()
 var gitCommand = "git"
+var archiveCommand = "/usr/bin/7z"
 var gethomeDir = homedir.Dir
 
 // Check if we have a copy of the repo already, if
 // we do, we update the repo, else we do a fresh clone
-func backUp(backupDir string, repo *Repository, bare bool, wg *sync.WaitGroup) ([]byte, error) {
+func backUp(
+	backupDir string,
+	repo *Repository,
+	bare bool,
+	wg *sync.WaitGroup,
+) ([]byte, error) {
 	defer wg.Done()
 
 	var dirName string
@@ -69,6 +79,60 @@ func backUp(backupDir string, repo *Repository, bare bool, wg *sync.WaitGroup) (
 		}
 		stdoutStderr, err = cmd.CombinedOutput()
 	}
+
+	if err != nil {
+		return stdoutStderr, err
+	}
+
+	// Archive
+	if appCfg.archiveDir != "" && err == nil {
+		archiveArgs := []string{
+			"a",
+		}
+
+		var suffix = ""
+		if appCfg.archiveEncryptionPassword != "" {
+			archiveArgs = append(archiveArgs, fmt.Sprintf("-p%s", appCfg.archiveEncryptionPassword))
+			suffix = ".enc"
+		}
+		suffix += ".7z"
+
+		archiveDirErr := os.MkdirAll(appCfg.archiveDir, 0751)
+		if archiveDirErr != nil {
+			return nil, archiveDirErr
+		}
+
+		now := time.Now()
+		archiveFullPath := path.Join(
+			appCfg.archiveDir,
+			strings.Join([]string{
+				repo.Namespace,
+				strings.ReplaceAll(dirName, ".git", ""),
+				now.Format("2006-01-02-15-04-05-0700"),
+			}, "-")+suffix,
+		)
+
+		archiveArgs = append(archiveArgs, []string{
+			"-v1500M",
+			"-t7z",
+			"-m0=lzma2",
+			"-mx=9",
+			"-mfb=64",
+			"-md=32m",
+			"-ms=on",
+			"-mhe=on",
+			archiveFullPath,
+			repoDir,
+		}...)
+
+		archiveCmd := execCommand(archiveCommand, archiveArgs...)
+		archiveStdoutStderr, archiveErr := archiveCmd.CombinedOutput()
+
+		if archiveErr != nil {
+			return archiveStdoutStderr, archiveErr
+		}
+	}
+
 	return stdoutStderr, err
 }
 

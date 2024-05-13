@@ -37,7 +37,7 @@ func getGithubRepositories(
 
 	if c.githubStartFromLastPushAt != "" {
 		startFromLastPush = true
-		startFromLastPushAt, err = time.Parse("2006-01-02 15:04:05", c.githubStartFromLastPushAt)
+		startFromLastPushAt, err = time.Parse(cacheSaveLastBackupDateAndContinueFromCache, c.githubStartFromLastPushAt)
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("failed to parse githubStartFromLastPushAt -> %v", err.Error()))
 		}

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/google/go-github/v34/github"
 	"github.com/ktrysmt/go-bitbucket"
@@ -60,4 +61,32 @@ func contains(list []string, x string) bool {
 		}
 	}
 	return false
+}
+
+func fileExists(filePath string) (bool, error) {
+	if _, err := os.Stat(filePath); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		} else {
+			return false, err
+		}
+	} else {
+		return true, nil
+	}
+}
+
+func getFileContents(filePath string) (string, error) {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
+}
+
+func writeFileContents(filePath string, content string) error {
+	err := os.WriteFile(filePath, []byte(content), 0751)
+	if err != nil {
+		return err
+	}
+	return nil
 }

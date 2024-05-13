@@ -5,6 +5,7 @@ type appConfig struct {
 	gitHostURL                string
 	backupDir                 string
 	archiveDir                string
+	cacheDir                  string
 	archiveEncryptionPassword string
 	ignorePrivate             bool
 	ignoreFork                bool
