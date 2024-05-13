@@ -1,4 +1,4 @@
-module github.com/amitsaha/gitbackup
+module github.com/kyaxcorp/gitbackup
 
 go 1.22
 
