@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -77,6 +78,11 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 				log.Println("failed to cache the time of this current clone")
 			} else {
 				// Save the time
+				cacheDirErr := os.MkdirAll(c.cacheDir, 0751)
+				if cacheDirErr != nil {
+					log.Println(fmt.Sprintf("failed to create cache dir -> %v", c.cacheDir))
+					return
+				}
 				err = writeFileContents(githubSaveLastBackupDateAndContinueFromCacheFilePath, startTime.Format(cacheSaveLastBackupDateAndContinueFromCache))
 				if err != nil {
 					log.Println(fmt.Sprintf("failed to save cache file -> %s", githubSaveLastBackupDateAndContinueFromCacheFilePath))

@@ -5,6 +5,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"log"
 	"net/url"
+	"os"
 	"os/exec"
 	"path"
 	"strings"
@@ -84,7 +85,7 @@ func backUp(
 	}
 
 	// Archive
-	if appCfg.archiveDir != "" && err != nil {
+	if appCfg.archiveDir != "" && err == nil {
 		archiveArgs := []string{
 			"a",
 		}
@@ -96,8 +97,13 @@ func backUp(
 		}
 		suffix += ".7z"
 
+		archiveDirErr := os.MkdirAll(appCfg.archiveDir, 0751)
+		if archiveDirErr != nil {
+			return nil, archiveDirErr
+		}
+
 		now := time.Now()
-		archiveDir := path.Join(appCfg.archiveDir, strings.Join([]string{repo.Namespace, dirName, now.Format("2006-01-02-15-04-05-0700")}, "-"), suffix)
+		archiveDir := path.Join(appCfg.archiveDir, strings.Join([]string{repo.Namespace, dirName, now.Format("2006-01-02-15-04-05-0700")}, "-")+suffix)
 
 		archiveArgs = append(archiveArgs, []string{
 			"-v1500M",
