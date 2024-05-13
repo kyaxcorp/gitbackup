@@ -69,6 +69,9 @@ func backUp(backupDir string, repo *Repository, bare bool, wg *sync.WaitGroup) (
 		}
 		stdoutStderr, err = cmd.CombinedOutput()
 	}
+
+	// Archive
+
 	return stdoutStderr, err
 }
 

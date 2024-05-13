@@ -98,8 +98,6 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 				isAnyErrorOccurred = true
 				log.Printf("Error backing up %s: %s\n", repo.Name, stdoutStderr)
 			}
-			// Archive
-
 			<-tokens
 		}(repo)
 	}
