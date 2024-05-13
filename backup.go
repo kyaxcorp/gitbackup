@@ -114,7 +114,7 @@ func backUp(
 
 		archiveArgs = append(archiveArgs, []string{
 			"-v1500M",
-			"t7z",
+			"-t7z",
 			"-m0=lzma2",
 			"-mx=9",
 			"-mfb=64",
@@ -124,8 +124,6 @@ func backUp(
 			archiveFullPath,
 			repoDir,
 		}...)
-
-		log.Println(archiveArgs)
 
 		archiveCmd := execCommand(archiveCommand, archiveArgs...)
 		archiveStdoutStderr, archiveErr := archiveCmd.CombinedOutput()
