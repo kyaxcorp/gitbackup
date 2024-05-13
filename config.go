@@ -20,7 +20,9 @@ type appConfig struct {
 	githubCreateUserMigrationRetryMax int
 	githubListUserMigrations          bool
 	githubWaitForMigrationComplete    bool
-	githubStartFromLastPushAt         string
+	//
+	githubStartFromLastPushAt               string
+	githubSaveLastBackupDateAndContinueFrom bool
 
 	// Git Lab
 	gitlabProjectVisibility     string

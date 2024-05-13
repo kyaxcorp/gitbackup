@@ -33,7 +33,8 @@ gitbackup/gitbackup:latest \
 -backupdir /gitbackup \
 -archive-dir /gitbackup-archives \
 -archive-encryption-password "1234567890" \
--github.startFromLastPushAt "2006-01-02 15:04:05"
+-github.startFromLastPushAt "2006-01-02 15:04:05" \
+-github.saveLastBackupDateAndContinueFrom true
 ```
 
 ## Using `gitbackup`
@@ -95,8 +96,10 @@ Usage of ./gitbackup:
         DNS of the custom Git host
   -github.createUserMigration
         Download user data
-  -github.startFromLastPushAt
+  -github.startFromLastPushAt "2006-01-02 15:04:05"
         Start backing up the repo which has a Push Equal or Higher than specified (Layout: 2006-01-02 15:04:05)
+  -github.saveLastBackupDateAndContinueFrom true
+        Backup only from the last clone datetime when a full successful backup of all repositories was complete, it can be used with github.startFromLastPushAt and it will be ignored after
   -github.createUserMigrationRetry
         Retry creating the GitHub user migration if we get an error (default true)
   -github.createUserMigrationRetryMax int

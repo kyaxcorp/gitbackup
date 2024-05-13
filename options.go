@@ -33,6 +33,12 @@ func initConfig(args []string) (*appConfig, error) {
 		"Start backing up the repo which has a Push Equal or Higher than specified",
 	)
 
+	fs.BoolVar(&c.githubSaveLastBackupDateAndContinueFrom,
+		"github.saveLastBackupDateAndContinueFrom",
+		true,
+		"Backup only from the last clone datetime when a full successful backup of all repositories was complete, it can be used with github.startFromLastPushAt and it will be ignored after",
+	)
+
 	fs.StringVar(
 		&githubNamespaceWhitelistString, "github.namespaceWhitelist",
 		"", "Organizations/Users from where we should clone (separate each value by a comma: 'user1,org2')",
