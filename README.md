@@ -58,7 +58,7 @@ gitbackup/gitbackup:latest \
 -service github \
 -backupdir /gitbackup \
 -archive-dir /gitbackup-archives \
--archive-dir /gitbackup-archives \
+-archive-encryption-password "1234567890" \
 -github.startFromLastPushAt ""
 ```
 
