@@ -39,7 +39,15 @@ func getGithubRepositories(
 					} else {
 						cloneURL = *star.Repository.SSHURL
 					}
-					repositories = append(repositories, &Repository{CloneURL: cloneURL, Name: *star.Repository.Name, Namespace: namespace, Private: *star.Repository.Private})
+					repositories = append(repositories, &Repository{
+						PushedAt:  star.Repository.PushedAt,
+						UpdatedAt: star.Repository.UpdatedAt,
+						//
+						CloneURL:  cloneURL,
+						Name:      *star.Repository.Name,
+						Namespace: namespace,
+						Private:   *star.Repository.Private,
+					})
 				}
 			} else {
 				return nil, err
@@ -62,6 +70,7 @@ func getGithubRepositories(
 				if *repo.Fork && ignoreFork {
 					continue
 				}
+
 				namespace := strings.Split(*repo.FullName, "/")[0]
 
 				if githubNamespaceWhitelistLength > 0 && !contains(githubNamespaceWhitelist, namespace) {
@@ -73,7 +82,14 @@ func getGithubRepositories(
 				} else {
 					cloneURL = *repo.SSHURL
 				}
-				repositories = append(repositories, &Repository{CloneURL: cloneURL, Name: *repo.Name, Namespace: namespace, Private: *repo.Private})
+				repositories = append(repositories, &Repository{
+					PushedAt:  repo.PushedAt,
+					UpdatedAt: repo.UpdatedAt,
+					CloneURL:  cloneURL,
+					Name:      *repo.Name,
+					Namespace: namespace,
+					Private:   *repo.Private,
+				})
 			}
 		} else {
 			return nil, err

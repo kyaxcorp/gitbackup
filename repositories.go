@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/google/go-github/v34/github"
 	"net/http"
 )
 
@@ -24,6 +25,11 @@ type Response struct {
 // Repository is a container for the details for a repository
 // we will backup
 type Repository struct {
+	// PushedAt represents the date and time of the last commit
+	PushedAt *github.Timestamp
+	// UpdatedAt represents the date and time of the last change in the repository
+	UpdatedAt *github.Timestamp
+	//
 	CloneURL  string
 	Name      string
 	Namespace string

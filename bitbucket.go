@@ -64,7 +64,14 @@ func getBitbucketRepositories(
 				cloneURL = sshURL
 			}
 
-			repositories = append(repositories, &Repository{CloneURL: cloneURL, Name: repo.Slug, Namespace: namespace, Private: repo.Is_private})
+			repositories = append(repositories, &Repository{
+				//PushedAt:  repo.PushedAt,
+				//UpdatedAt: repo.UpdatedAt,
+				CloneURL:  cloneURL,
+				Name:      repo.Slug,
+				Namespace: namespace,
+				Private:   repo.Is_private,
+			})
 		}
 	}
 	return repositories, nil

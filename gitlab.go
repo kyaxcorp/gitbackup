@@ -66,7 +66,14 @@ func getGitlabRepositories(
 			} else {
 				cloneURL = repo.SSHURLToRepo
 			}
-			repositories = append(repositories, &Repository{CloneURL: cloneURL, Name: repo.Name, Namespace: namespace, Private: repo.Visibility == "private"})
+			repositories = append(repositories, &Repository{
+				//PushedAt:  repo.PushedAt,
+				//UpdatedAt: repo.UpdatedAt,
+				CloneURL:  cloneURL,
+				Name:      repo.Name,
+				Namespace: namespace,
+				Private:   repo.Visibility == "private",
+			})
 		}
 		if resp.NextPage == 0 {
 			break

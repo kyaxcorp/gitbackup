@@ -7,7 +7,7 @@ import (
 
 // MaxConcurrentClones is the upper limit of the maximum number of
 // concurrent git clones
-const MaxConcurrentClones = 20
+//const MaxConcurrentClones = 20
 
 const defaultMaxUserMigrationRetry = 5
 
