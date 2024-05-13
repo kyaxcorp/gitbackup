@@ -19,6 +19,7 @@ GitLab (including custom GitLab installations), or Bitbucket.
 ## Running `gitbackup` from docker
 
 ```
+docker pull gitbackup/gitbackup:latest
 docker run \
 --rm \
 --name gitbackup \
@@ -37,6 +38,9 @@ gitbackup/gitbackup:latest \
 -archive-encryption-password "1234567890" \
 -github.startFromLastPushAt "2006-01-02 15:04:05" \
 -github.saveLastBackupDateAndContinueFrom true
+
+# Save your archives
+...
 ```
 
 ## Using `gitbackup`
