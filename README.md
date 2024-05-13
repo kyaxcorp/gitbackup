@@ -2,7 +2,6 @@
 
 Code
 Quality [![Go Report Card](https://goreportcard.com/badge/github.com/kyaxcorp/gitbackup)](https://goreportcard.com/report/github.com/kyaxcorp/gitbackup)
-[![.github/workflows/ci.yml](https://github.com/amitsaha/gitbackup/actions/workflows/ci.yml/badge.svg)](https://github.com/amitsaha/gitbackup/actions/workflows/ci.yml)
 
 - [gitbackup - Backup your GitHub, GitLab, and Bitbucket repositories](#gitbackup---backup-your-github-gitlab-and-bitbucket-repositories)
     - [Introduction](#introduction)
