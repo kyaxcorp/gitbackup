@@ -15,8 +15,16 @@ GitLab (including custom GitLab installations), or Bitbucket.
   you get back as a .tar.gz
   file containing all the artefacts that GitHub supports via their Migration API.
 
-If you only need the latest commit for certain repositories, pass `-shallow.repos` with a comma separated list of
+### Shallow clones (latest commit per branch)
+
+If you only need the latest commit for specific repositories, pass `-shallow.repos` with a comma separated list of
 `namespace/repo` names (works with bare and non-bare clones). Example: `-shallow.repos user1/repo1,org2/repo2`.
+
+For those repos:
+- Bare mode uses `git clone --mirror --depth=1 --no-single-branch`, then `git remote update --prune --depth=1 --no-tags`.
+- Non-bare uses `git clone --depth=1 --no-single-branch`, then `git fetch origin --prune --depth=1 --no-tags`.
+
+This keeps only the latest commit per branch. It is meant for backups only; the shallow mirror is not suitable for pushing.
 
 ## Running `gitbackup` from docker
 
@@ -40,6 +48,8 @@ gitbackup/gitbackup:latest \
 -archive-encryption-password "1234567890" \
 -github.startFromLastPushAt "2006-01-02 15:04:05" \
 -github.saveLastBackupDateAndContinueFrom true
+# optional: target only some repositories for shallow cloning
+# -shallow.repos "user1/repo1,org2/repo2"
 
 # Save your archives
 ...
