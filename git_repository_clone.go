@@ -20,6 +20,21 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 	// Used for waiting for all the goroutines to finish before exiting
 	startTime := time.Now()
 	githubSaveLastBackupDateAndContinueFromCacheFilePath := getGithubSaveLastBackupDateAndContinueFromPath(c)
+	debugLogf(
+		"Starting backup run: service=%s backupDir=%s archiveDir=%s cacheDir=%s bare=%t maxConcurrentClones=%d useHTTPS=%t ignorePrivate=%t ignoreFork=%t shallowRepos=%d startFrom=%s saveLast=%t",
+		c.service,
+		c.backupDir,
+		c.archiveDir,
+		c.cacheDir,
+		c.bare,
+		c.maxConcurrentClones,
+		c.useHTTPSClone,
+		c.ignorePrivate,
+		c.ignoreFork,
+		len(c.shallowCloneRepos),
+		c.githubStartFromLastPushAt,
+		c.githubSaveLastBackupDateAndContinueFrom,
+	)
 
 	var wg sync.WaitGroup
 	defer wg.Wait()
@@ -65,9 +80,13 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 	if err != nil {
 		return err
 	}
+	debugLogf("Retrieved %d repositories", len(repositories))
 
 	for _, repo := range repositories {
 		repo.Shallow = shallowCloneRequested(c.shallowCloneRepos, repo.Namespace, repo.Name)
+		if repo.Shallow {
+			debugLogf("Marked for shallow clone: %s/%s", repo.Namespace, repo.Name)
+		}
 	}
 
 	if len(repositories) == 0 {
@@ -103,6 +122,7 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 		tokens <- true
 		wg.Add(1)
 		go func(repo *Repository) {
+			debugLogf("Queueing repo: %s/%s (shallow=%t bare=%t)", repo.Namespace, repo.Name, repo.Shallow, c.bare)
 			// Backup
 			stdoutStderr, err := backUp(c.backupDir, repo, c.bare, &wg)
 			if err != nil {

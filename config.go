@@ -9,6 +9,7 @@ type appConfig struct {
 	archiveEncryptionPassword string
 	ignorePrivate             bool
 	ignoreFork                bool
+	debug                     bool
 	useHTTPSClone             bool
 	bare                      bool
 	shallowCloneRepos         []string

@@ -37,6 +37,8 @@ Usage of gitbackup:
     	Ignore repositories which are forks
   -ignore-private
     	Ignore private repositories/projects
+  -debug
+    	Enable verbose debug logging
   -maxConcurrentClones int
     	Max Number of Concurrent Clones (default 10)
   -service string

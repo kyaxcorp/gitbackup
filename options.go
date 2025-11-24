@@ -24,6 +24,7 @@ func initConfig(args []string) (*appConfig, error) {
 	fs.StringVar(&appCfg.archiveEncryptionPassword, "archive-encryption-password", "", "Archive Encryption Password")
 	fs.BoolVar(&appCfg.ignorePrivate, "ignore-private", false, "Ignore private repositories/projects")
 	fs.BoolVar(&appCfg.ignoreFork, "ignore-fork", false, "Ignore repositories which are forks")
+	fs.BoolVar(&appCfg.debug, "debug", false, "Enable verbose debug logging")
 	fs.BoolVar(&appCfg.useHTTPSClone, "use-https-clone", false, "Use HTTPS for cloning instead of SSH")
 	fs.BoolVar(&appCfg.bare, "bare", false, "Clone bare repositories")
 	fs.StringVar(&shallowCloneReposString, "shallow.repos", "", "Comma separated full repo names (namespace/name) to shallow clone (latest commit per branch)")

@@ -64,6 +64,12 @@ func contains(list []string, x string) bool {
 	return false
 }
 
+func debugLogf(format string, args ...interface{}) {
+	if appCfg.debug {
+		log.Printf("[DEBUG] "+format, args...)
+	}
+}
+
 func shallowCloneRequested(shallowList []string, namespace, name string) bool {
 	if len(shallowList) == 0 {
 		return false

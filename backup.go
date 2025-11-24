@@ -48,14 +48,18 @@ func backUp(
 		var cmd *exec.Cmd
 		if repo.Shallow {
 			if bare {
+				debugLogf("Updating shallow mirror for %s at %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "-C", repoDir, "remote", "update", "--prune", "--depth=1", "--no-tags")
 			} else {
+				debugLogf("Updating shallow clone for %s at %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "-C", repoDir, "fetch", "origin", "--prune", "--depth=1", "--no-tags")
 			}
 		} else {
 			if bare {
+				debugLogf("Updating mirror for %s at %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "-C", repoDir, "remote", "update", "--prune")
 			} else {
+				debugLogf("Updating clone for %s at %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "-C", repoDir, "pull")
 			}
 		}
@@ -82,14 +86,18 @@ func backUp(
 		var cmd *exec.Cmd
 		if repo.Shallow {
 			if bare {
+				debugLogf("Cloning shallow mirror for %s into %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "clone", "--mirror", "--depth=1", "--no-single-branch", repo.CloneURL, repoDir)
 			} else {
+				debugLogf("Cloning shallow repo for %s into %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "clone", "--depth=1", "--no-single-branch", repo.CloneURL, repoDir)
 			}
 		} else {
 			if bare {
+				debugLogf("Cloning mirror for %s into %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "clone", "--mirror", repo.CloneURL, repoDir)
 			} else {
+				debugLogf("Cloning repo for %s into %s", repo.Name, repoDir)
 				cmd = execCommand(gitCommand, "clone", repo.CloneURL, repoDir)
 			}
 		}
