@@ -35,6 +35,30 @@ func fakeRemoteUpdateCommand(command string, args ...string) (cmd *exec.Cmd) {
 	return cmd
 }
 
+func fakeShallowMirrorCloneCommand(command string, args ...string) (cmd *exec.Cmd) {
+	cs := []string{"-test.run=TestHelperShallowMirrorCloneProcess", "--", command}
+	cs = append(cs, args...)
+	cmd = exec.Command(os.Args[0], cs...)
+	cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
+	return cmd
+}
+
+func fakeShallowCloneCommand(command string, args ...string) (cmd *exec.Cmd) {
+	cs := []string{"-test.run=TestHelperShallowCloneProcess", "--", command}
+	cs = append(cs, args...)
+	cmd = exec.Command(os.Args[0], cs...)
+	cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
+	return cmd
+}
+
+func fakeShallowRemoteUpdateCommand(command string, args ...string) (cmd *exec.Cmd) {
+	cs := []string{"-test.run=TestHelperShallowRemoteUpdateProcess", "--", command}
+	cs = append(cs, args...)
+	cmd = exec.Command(os.Args[0], cs...)
+	cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
+	return cmd
+}
+
 func TestBackup(t *testing.T) {
 	var wg sync.WaitGroup
 	repo := Repository{Name: "testrepo", CloneURL: "git://foo.com/foo"}
@@ -101,6 +125,66 @@ func TestBareBackup(t *testing.T) {
 	}
 }
 
+func TestShallowBareBackup(t *testing.T) {
+	var wg sync.WaitGroup
+	repo := Repository{Name: "testrepo", CloneURL: "git://foo.com/foo", Shallow: true}
+	backupDir := "/tmp/backupdir"
+
+	appFS = afero.NewMemMapFs()
+	appFS.MkdirAll(backupDir, 0771)
+
+	defer func() {
+		execCommand = exec.Command
+		wg.Wait()
+	}()
+
+	execCommand = fakeShallowMirrorCloneCommand
+	wg.Add(1)
+	stdoutStderr, err := backUp(backupDir, &repo, true, &wg)
+	if err != nil {
+		t.Errorf("%s", stdoutStderr)
+	}
+
+	repoDir := path.Join(backupDir, repo.Name+".git")
+	appFS.MkdirAll(repoDir, 0771)
+	execCommand = fakeShallowRemoteUpdateCommand
+	wg.Add(1)
+	stdoutStderr, err = backUp(backupDir, &repo, true, &wg)
+	if err != nil {
+		t.Errorf("%s", stdoutStderr)
+	}
+}
+
+func TestShallowBackup(t *testing.T) {
+	var wg sync.WaitGroup
+	repo := Repository{Name: "testrepo", CloneURL: "git://foo.com/foo", Shallow: true}
+	backupDir := "/tmp/backupdir"
+
+	appFS = afero.NewMemMapFs()
+	appFS.MkdirAll(backupDir, 0771)
+
+	defer func() {
+		execCommand = exec.Command
+		wg.Wait()
+	}()
+
+	execCommand = fakeShallowCloneCommand
+	wg.Add(1)
+	stdoutStderr, err := backUp(backupDir, &repo, false, &wg)
+	if err != nil {
+		t.Errorf("%s", stdoutStderr)
+	}
+
+	repoDir := path.Join(backupDir, repo.Name)
+	appFS.MkdirAll(repoDir, 0771)
+	execCommand = fakeShallowRemoteUpdateCommand
+	wg.Add(1)
+	stdoutStderr, err = backUp(backupDir, &repo, false, &wg)
+	if err != nil {
+		t.Errorf("%s", stdoutStderr)
+	}
+}
+
 func TestHelperPullProcess(t *testing.T) {
 	if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
 		return
@@ -132,6 +216,62 @@ func TestHelperRemoteUpdateProcess(t *testing.T) {
 	// Check that git command was executed
 	if os.Args[3] != "git" || os.Args[6] != "remote" || os.Args[7] != "update" {
 		fmt.Fprintf(os.Stdout, "Expected git remote update to be executed. Got %v", os.Args[3:])
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+func TestHelperShallowMirrorCloneProcess(t *testing.T) {
+	if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
+		return
+	}
+	args := os.Args[3:]
+	if args[0] != "git" || args[1] != "clone" {
+		fmt.Fprintf(os.Stdout, "Expected git clone to be executed. Got %v", args)
+		os.Exit(1)
+	}
+	if !contains(args, "--mirror") || !contains(args, "--depth=1") || !contains(args, "--no-single-branch") {
+		fmt.Fprintf(os.Stdout, "Expected shallow mirror options. Got %v", args)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+func TestHelperShallowCloneProcess(t *testing.T) {
+	if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
+		return
+	}
+	args := os.Args[3:]
+	if args[0] != "git" || args[1] != "clone" {
+		fmt.Fprintf(os.Stdout, "Expected git clone to be executed. Got %v", args)
+		os.Exit(1)
+	}
+	if contains(args, "--mirror") {
+		fmt.Fprintf(os.Stdout, "Did not expect mirror clone. Got %v", args)
+		os.Exit(1)
+	}
+	if !contains(args, "--depth=1") || !contains(args, "--no-single-branch") {
+		fmt.Fprintf(os.Stdout, "Expected shallow options. Got %v", args)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+func TestHelperShallowRemoteUpdateProcess(t *testing.T) {
+	if os.Getenv("GO_WANT_HELPER_PROCESS") != "1" {
+		return
+	}
+	args := os.Args[3:]
+	if args[0] != "git" {
+		fmt.Fprintf(os.Stdout, "Expected git command. Got %v", args)
+		os.Exit(1)
+	}
+	if !(contains(args, "remote") || contains(args, "fetch")) {
+		fmt.Fprintf(os.Stdout, "Expected remote update/fetch. Got %v", args)
+		os.Exit(1)
+	}
+	if !contains(args, "--depth=1") || !contains(args, "--no-tags") {
+		fmt.Fprintf(os.Stdout, "Expected shallow update options. Got %v", args)
 		os.Exit(1)
 	}
 	os.Exit(0)

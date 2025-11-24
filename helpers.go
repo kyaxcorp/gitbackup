@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -61,6 +62,13 @@ func contains(list []string, x string) bool {
 		}
 	}
 	return false
+}
+
+func shallowCloneRequested(shallowList []string, namespace, name string) bool {
+	if len(shallowList) == 0 {
+		return false
+	}
+	return contains(shallowList, fmt.Sprintf("%s/%s", namespace, name))
 }
 
 func fileExists(filePath string) (bool, error) {

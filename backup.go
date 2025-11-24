@@ -46,10 +46,18 @@ func backUp(
 	if err == nil {
 		log.Printf("%s exists, updating. \n", repo.Name)
 		var cmd *exec.Cmd
-		if bare {
-			cmd = execCommand(gitCommand, "-C", repoDir, "remote", "update", "--prune")
+		if repo.Shallow {
+			if bare {
+				cmd = execCommand(gitCommand, "-C", repoDir, "remote", "update", "--prune", "--depth=1", "--no-tags")
+			} else {
+				cmd = execCommand(gitCommand, "-C", repoDir, "fetch", "origin", "--prune", "--depth=1", "--no-tags")
+			}
 		} else {
-			cmd = execCommand(gitCommand, "-C", repoDir, "pull")
+			if bare {
+				cmd = execCommand(gitCommand, "-C", repoDir, "remote", "update", "--prune")
+			} else {
+				cmd = execCommand(gitCommand, "-C", repoDir, "pull")
+			}
 		}
 		stdoutStderr, err = cmd.CombinedOutput()
 	} else {
@@ -72,10 +80,18 @@ func backUp(
 		}
 
 		var cmd *exec.Cmd
-		if bare {
-			cmd = execCommand(gitCommand, "clone", "--mirror", repo.CloneURL, repoDir)
+		if repo.Shallow {
+			if bare {
+				cmd = execCommand(gitCommand, "clone", "--mirror", "--depth=1", "--no-single-branch", repo.CloneURL, repoDir)
+			} else {
+				cmd = execCommand(gitCommand, "clone", "--depth=1", "--no-single-branch", repo.CloneURL, repoDir)
+			}
 		} else {
-			cmd = execCommand(gitCommand, "clone", repo.CloneURL, repoDir)
+			if bare {
+				cmd = execCommand(gitCommand, "clone", "--mirror", repo.CloneURL, repoDir)
+			} else {
+				cmd = execCommand(gitCommand, "clone", repo.CloneURL, repoDir)
+			}
 		}
 		stdoutStderr, err = cmd.CombinedOutput()
 	}

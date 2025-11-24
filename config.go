@@ -11,6 +11,7 @@ type appConfig struct {
 	ignoreFork                bool
 	useHTTPSClone             bool
 	bare                      bool
+	shallowCloneRepos         []string
 	maxConcurrentClones       int
 
 	// GitHub

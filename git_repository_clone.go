@@ -65,6 +65,11 @@ func handleGitRepositoryClone(client interface{}, c *appConfig) error {
 	if err != nil {
 		return err
 	}
+
+	for _, repo := range repositories {
+		repo.Shallow = shallowCloneRequested(c.shallowCloneRepos, repo.Namespace, repo.Name)
+	}
+
 	if len(repositories) == 0 {
 		return fmt.Errorf("no repositories retrieved")
 	}

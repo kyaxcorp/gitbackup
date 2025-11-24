@@ -11,6 +11,7 @@ var appCfg appConfig
 func initConfig(args []string) (*appConfig, error) {
 
 	var githubNamespaceWhitelistString string
+	var shallowCloneReposString string
 
 	fs := flag.NewFlagSet("gitbackup", flag.ExitOnError)
 
@@ -25,6 +26,7 @@ func initConfig(args []string) (*appConfig, error) {
 	fs.BoolVar(&appCfg.ignoreFork, "ignore-fork", false, "Ignore repositories which are forks")
 	fs.BoolVar(&appCfg.useHTTPSClone, "use-https-clone", false, "Use HTTPS for cloning instead of SSH")
 	fs.BoolVar(&appCfg.bare, "bare", false, "Clone bare repositories")
+	fs.StringVar(&shallowCloneReposString, "shallow.repos", "", "Comma separated full repo names (namespace/name) to shallow clone (latest commit per branch)")
 
 	// GitHub specific flags
 	fs.StringVar(&appCfg.githubRepoType, "github.repoType", "all", "Repo types to backup (all, owner, member, starred)")
@@ -97,6 +99,9 @@ func initConfig(args []string) (*appConfig, error) {
 	// Split namespaces
 	if len(appCfg.githubNamespaceWhitelist) > 0 {
 		appCfg.githubNamespaceWhitelist = strings.Split(githubNamespaceWhitelistString, ",")
+	}
+	if len(shallowCloneReposString) > 0 {
+		appCfg.shallowCloneRepos = strings.Split(shallowCloneReposString, ",")
 	}
 	appCfg.backupDir = setupBackupDir(&appCfg.backupDir, &appCfg.service, &appCfg.gitHostURL)
 	return &appCfg, nil

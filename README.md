@@ -15,6 +15,9 @@ GitLab (including custom GitLab installations), or Bitbucket.
   you get back as a .tar.gz
   file containing all the artefacts that GitHub supports via their Migration API.
 
+If you only need the latest commit for certain repositories, pass `-shallow.repos` with a comma separated list of
+`namespace/repo` names (works with bare and non-bare clones). Example: `-shallow.repos user1/repo1,org2/repo2`.
+
 ## Running `gitbackup` from docker
 
 ```

@@ -34,6 +34,7 @@ type Repository struct {
 	Name      string
 	Namespace string
 	Private   bool
+	Shallow   bool
 }
 
 func getRepositories(
