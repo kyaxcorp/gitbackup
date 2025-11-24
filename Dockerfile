@@ -5,15 +5,18 @@ FROM golang:1.22 as go-build
 WORKDIR /app
 COPY . /app
 
+ENV CGO_ENABLED=0 GOOS=linux
+
 RUN go mod download
-RUN go build -o /tmp/main
+RUN go build -o /tmp/gitbackup
 
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates git p7zip
 
 WORKDIR /app
-COPY --from=go-build /tmp/main /usr/local/bin/gitbackup
+COPY --from=go-build /tmp/gitbackup /usr/local/bin/gitbackup
+RUN chmod +x /usr/local/bin/gitbackup
 
 ARG BUILD_NO=1
 LABEL BUILD_NO=$BUILD_NO

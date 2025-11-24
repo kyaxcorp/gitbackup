@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO="gitbackup/gitbackup"
-TAG_NAME="$REPO:v1.0.4"
+TAG_NAME="$REPO:v1.0.5"
 LATEST="$REPO:latest"
 
 docker buildx create --use --name mounted-build-kit --node mounted-build-kit --bootstrap
