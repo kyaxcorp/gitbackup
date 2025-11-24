@@ -21,6 +21,15 @@ var appFS = afero.NewOsFs()
 var gitCommand = "git"
 var archiveCommand = "/usr/bin/7z"
 var gethomeDir = homedir.Dir
+var gitCommandTimeout = 0 * time.Second // placeholder for potential future timeout support
+
+func runGitCommand(cmd *exec.Cmd, repo *Repository, bare bool, op string) ([]byte, error) {
+	start := time.Now()
+	debugLogf("git %s: repo=%s/%s shallow=%t bare=%t", op, repo.Namespace, repo.Name, repo.Shallow, bare)
+	out, err := cmd.CombinedOutput()
+	debugLogf("git %s: repo=%s/%s duration=%s", op, repo.Namespace, repo.Name, time.Since(start))
+	return out, err
+}
 
 // Check if we have a copy of the repo already, if
 // we do, we update the repo, else we do a fresh clone
@@ -63,7 +72,7 @@ func backUp(
 				cmd = execCommand(gitCommand, "-C", repoDir, "pull")
 			}
 		}
-		stdoutStderr, err = cmd.CombinedOutput()
+		stdoutStderr, err = runGitCommand(cmd, repo, bare, "update")
 	} else {
 		log.Printf("Cloning %s\n", repo.Name)
 		log.Printf("%#v\n", repo)
@@ -101,7 +110,7 @@ func backUp(
 				cmd = execCommand(gitCommand, "clone", repo.CloneURL, repoDir)
 			}
 		}
-		stdoutStderr, err = cmd.CombinedOutput()
+		stdoutStderr, err = runGitCommand(cmd, repo, bare, "clone")
 	}
 
 	if err != nil {
