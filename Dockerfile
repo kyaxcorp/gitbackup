@@ -8,17 +8,12 @@ COPY . /app
 RUN go mod download
 RUN go build -o /tmp/main
 
-FROM rockylinux:9
+FROM alpine:latest
 
-RUN dnf update -y
-RUN dnf install epel-release -y
-RUN dnf install -y p7zip p7zip-plugins git
+RUN apk add --no-cache ca-certificates git p7zip
 
 WORKDIR /app
-COPY --from=go-build /tmp/main ./gitbackup
-RUN ln -s /app/gitbackup /usr/bin/gitbackup
-COPY container.entrypoint.sh ./
-RUN chmod +x container.entrypoint.sh
+COPY --from=go-build /tmp/main /usr/local/bin/gitbackup
 
 ARG BUILD_NO=1
 LABEL BUILD_NO=$BUILD_NO
@@ -76,5 +71,4 @@ ARG BUILD_VCS_COMMIT_ID_URL
 LABEL BUILD_VCS_COMMIT_ID_URL=$BUILD_VCS_COMMIT_ID_URL
 ENV BUILD_VCS_COMMIT_ID_URL=$BUILD_VCS_COMMIT_ID_URL
 
-
-ENTRYPOINT ["/app/container.entrypoint.sh"]
+ENTRYPOINT ["gitbackup"]
