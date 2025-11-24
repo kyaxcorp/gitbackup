@@ -100,26 +100,20 @@ Typing ``-help`` will display the command line options that `gitbackup` recogniz
 ```
 $ gitbackup -help
 Usage of ./gitbackup:
+  -archive-dir string
+        Backup Archive directory
+  -archive-encryption-password string
+        Archive Encryption Password
   -backupdir string
         Backup directory
-  -archive-dir string
-        Archive Backup directory
-  -cache-dir string
-        Cache directory  
-  -archive-encryption-password 
-        Archive Encryption Password
   -bare
         Clone bare repositories
-  -maxConcurrentClones 5
-        Max concurrent clones
+  -cache-dir string
+        Cache directory
   -githost.url string
         DNS of the custom Git host
   -github.createUserMigration
         Download user data
-  -github.startFromLastPushAt "2006-01-02 15:04:05"
-        Start backing up the repo which has a Push Equal or Higher than specified (Layout: 2006-01-02 15:04:05)
-  -github.saveLastBackupDateAndContinueFrom true
-        Backup only from the last clone datetime when a full successful backup of all repositories was complete, it can be used with github.startFromLastPushAt and it will be ignored after
   -github.createUserMigrationRetry
         Retry creating the GitHub user migration if we get an error (default true)
   -github.createUserMigrationRetryMax int
@@ -130,6 +124,10 @@ Usage of ./gitbackup:
         Organizations/Users from where we should clone (separate each value by a comma: 'user1,org2')
   -github.repoType string
         Repo types to backup (all, owner, member, starred) (default "all")
+  -github.saveLastBackupDateAndContinueFrom
+        Backup only from the last clone datetime when a full successful backup of all repositories was complete, it can be used with github.startFromLastPushAt and it will be ignored after (default true)
+  -github.startFromLastPushAt string
+        Start backing up the repo which has a Push Equal or Higher than specified
   -github.waitForUserMigration
         Wait for migration to complete (default true)
   -gitlab.projectMembershipType string
@@ -140,8 +138,12 @@ Usage of ./gitbackup:
         Ignore repositories which are forks
   -ignore-private
         Ignore private repositories/projects
+  -maxConcurrentClones int
+        Max Number of Concurrent Clones (default 10)
   -service string
         Git Hosted Service Name (github/gitlab/bitbucket)
+  -shallow.repos string
+        Comma separated full repo names (namespace/name) to shallow clone (latest commit per branch)
   -use-https-clone
         Use HTTPS for cloning instead of SSH
 ```
